@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        body {
+            text-align: center;
+            background-color: aquamarine;
+        }
+
+        span {
+            font-size: 50px;
+        }
+
+        .smallDiv {
+            width: 380px;
+            border: 1px solid navy;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            margin-left: 20px;
+            text-align: center;
+            float: left;
+            border-radius:25px;
+        }
+
+        .active, .btn-info {
+            width: 100px;
+            margin: 5px 5px 5px 5px;
+        }
+
+        #Time {
+            font-size: 160px;
+            font-stretch: expanded;
+            background-color: blue;
+            border: 2px solid red;
+            border-radius: 100px;
+            width: 200px;
+            height: 200px;
+            margin: 5px 5px 5px 90px;
+            text-align: center;
+        }
+
+        #Message {
+            color: red;
+            font-size: 40px;
+        }
+
+        #divView {
+            font-size: 40px;
+            text-align: left;
+            font-weight: bold;
+            margin: 5px 5px 5px 5px;
+        }
+        #divResult{
+            font-size:30px;
+            text-align:left;
+            font-weight:bold;
+        }
+    </style>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js" charset="utf-8"></script>
+    <script>
+        var number1;
+        var number2;
+        var skor = 0;
+        var array = [];
+        function randomIntFromInterval(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        var sayac = 5;
+        var myVar;
+        function Write() {
+            number1 = randomIntFromInterval(1, 10);
+            $('#numberOne').text(number1);
+            number2 = randomIntFromInterval(1, 10);
+            $('#numberTwo').text(number2);
+            $('#numberResult').text("");
+
+            $('#Time').text(sayac);
+            myVar = setInterval(Counter, 1000);
+        }
+
+        function Counter() {
+            sayac--;
+            if (sayac < 0) {
+                skor -= 3;
+                MessageScore("Time's Up");
+                array.push(number1 + "*" + number2 + " = " + number1 * number2 + "  Time's Up<br />");
+                sayac = 5;
+                clearInterval(myVar);
+                Write();
+            }
+            $('#Time').text(sayac);
+        }
+
+        function MessageScore(a) {
+            $('#textWarning').text("Score: " + skor);
+            $('#Message').text(a);
+            $('#Message').css({ opacity: 1.0, visibility: "visible" }).animate({ opacity: 0 }, 1000);
+        }
+
+        $(document).ready(function () {
+            Write();
+
+            $('#buttonEnter').click(function () {
+                var sonuc = number1 * number2;
+
+                if (sonuc == $('#numberResult').text()) {
+                    skor += 5;
+                    MessageScore("True");
+                    array.push(number1 + "*" + number2 + " = " + number1 * number2 + "  True<br />");
+                }
+                else {
+                    skor -= 3;
+                    MessageScore("False");
+                    array.push(number1 + "*" + number2 + " = " + number1 * number2 + "  False<br />");
+                }
+                sayac = 5;
+                clearInterval(myVar);
+                Write();
+            })
+
+            $('.active:not(#cancelButton)').click(function () {
+                $('#numberResult').append($(this).val());
+            });
+
+            $('#cancelButton').click(function () {
+                $.deger = $('#numberResult').text();
+                $('#numberResult').text($.deger.substring(0, $.deger.length - 1));
+            });
+
+            $("#buttonFinish").click(function () {
+                $("input:not(#buttonAgain),span:not(#textWarning),p").hide("slow");
+                clearInterval(myVar);
+                for (var i = 0; i < array.length; i++) {
+                    $("#divResult").append(array[i]);
+                }
+                array = [];
+                skor = 0;
+                $("#divResult").css('visibility', 'visible');
+
+            })
+
+            $('#buttonAgain').click(function () {
+                window.location.reload(false);
+            })
+        });
+
+    </script>
+</head>
+<body>
+    <div class="smallDiv" id="#divView">
+        <div id="divResult" style="visibility:hidden"></div>
+        <audio src=""></audio>
+        <span id="numberOne"></span>
+        <span>*</span>
+        <span id="numberTwo"></span>
+        <span>=</span>
+        <span id="numberResult"></span><br />
+
+        <input class="active" type="button" value="1" />
+        <input class="active" type="button" value="2" />
+        <input class="active" type="button" value="3" /><br />
+        <input class="active" type="button" value="4" />
+        <input class="active" type="button" value="5" />
+        <input class="active" type="button" value="6" /><br />
+        <input class="active" type="button" value="7" />
+        <input class="active" type="button" value="8" />
+        <input class="active" type="button" value="9" /><br />
+        <input class="active" type="button" value="0" />
+        <input class="active" type="button" value="x" id="cancelButton" />
+
+        <input class="btn-info" type="button" id="buttonEnter" value="Enter" /><br />       
+        <p id="Time"></p>
+        <input class="btn-info" type="button" id="buttonFinish" value="Finish" /><br />
+        <p id="Message">Multiplication</p>
+        <span id="textWarning">Score: 0</span><br />
+        <input class="btn-info" type="button" id="buttonAgain" value="Play Again" /><br />
+    </div>
+</body>
+</html>
